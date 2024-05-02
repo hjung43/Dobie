@@ -7,6 +7,8 @@ import java.io.IOException;
 public interface NginxConfigService {
     void saveProxyNginxConfig(int projectId, String projectName);
 
+    void saveProxyNginxConfigTest(int projectId, String projectName);
+
     String withHttpsConfig(NginxConfigDto nginxConfig);
 
     String withoutHttpsConfig(NginxConfigDto nginxConfig);

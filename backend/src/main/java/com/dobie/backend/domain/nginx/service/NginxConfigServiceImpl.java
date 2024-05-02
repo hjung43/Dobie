@@ -13,6 +13,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,44 @@ public class NginxConfigServiceImpl implements NginxConfigService{
     @Override
     public void saveProxyNginxConfig(int projectId, String projectName) {
         NginxConfigDto nginxConfig = projectService.getNginxConfigDto(projectId); //projectId로 nginxConfigDto 찾아오기
+        StringBuilder sb = new StringBuilder(); //config내용 저장할 StringBuilder
+
+        //https사용 유무 확인
+        if(nginxConfig.isUsingHttps()){
+            sb.append(withHttpsConfig(nginxConfig)); //https 사용시 config파일 생성
+        }else{
+            sb.append(withoutHttpsConfig(nginxConfig)); //https 미사용시 config파일 생성
+        }
+
+        String fileName = projectName + ".conf"; //파일이름 [projectName].conf로 만들어주기
+        fileManager.saveFile("/nginx",fileName,sb.toString()); //fileManager활용해서 /nginx경로에 저장하기
+    }
+
+    @Override
+    public void saveProxyNginxConfigTest(int projectId, String projectName) {
+        //projectId로 nginxConfigDto 만들기(더미)
+        NginxConfigDto nginxConfig = NginxConfigDto.builder()
+                .domain("asdfjk.xyz")
+                .usingHttps(true)
+                .sslCertificate("/etc/letsencryp/asdfjk.xyz/full.pem")
+                .sslCertificateKey("/etc/letsencryp/asdfjk.xyz/key.pem")
+                .build();
+
+        // Proxy list 생성
+        List<NginxProxyDto> proxyList = new ArrayList<>();
+
+        // proxy
+        NginxProxyDto backProxyDto = new NginxProxyDto("/api","spring",8080);
+        NginxProxyDto swaggerProxyDto = new NginxProxyDto("/swagger-ui","swagger",8080);
+        NginxProxyDto frontendProxyDto = new NginxProxyDto("/","react",3000);
+
+        // proxyList 저장
+        proxyList.add(backProxyDto);
+        proxyList.add(swaggerProxyDto);
+        proxyList.add(frontendProxyDto);
+
+        nginxConfig.setProxyList(proxyList);
+
         StringBuilder sb = new StringBuilder(); //config내용 저장할 StringBuilder
 
         //https사용 유무 확인
