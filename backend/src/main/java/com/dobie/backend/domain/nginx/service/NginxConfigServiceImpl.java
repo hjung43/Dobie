@@ -91,7 +91,7 @@ public class NginxConfigServiceImpl implements NginxConfigService{
         String frontPath = "/" + projectName + path; //파일 저장할 경로 생성
         //해당 파일 경로 이미 있는지 확인
         if (!new File(frontPath).exists()) {
-            log.info("잘못된 경로입니다.");
+            log.info(frontPath+" :잘못된 경로입니다.");
             return;
         }
         String savePath = "/" + projectName + path + "/conf/conf.d"; //파일 저장할 경로 생성
