@@ -4,8 +4,10 @@ import com.dobie.backend.domain.project.dto.NginxConfigDto;
 import com.dobie.backend.domain.project.dto.NginxProxyDto;
 import com.dobie.backend.domain.project.service.ProjectService;
 import com.dobie.backend.util.file.FileManager;
+import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
@@ -21,8 +23,12 @@ import java.util.List;
 @Log4j2
 public class NginxConfigServiceImpl implements NginxConfigService{
 
+    @Autowired
+    private ServletContext servletContext;
+
     private final ProjectService projectService;
     FileManager fileManager = new FileManager();
+
 
     //리버스프록시 nginx config 파일 생성 후 /nginx에 [projectName].conf 이름으로 저장
     @Override
@@ -75,14 +81,17 @@ public class NginxConfigServiceImpl implements NginxConfigService{
             sb.append(withoutHttpsConfig(nginxConfig)); //https 미사용시 config파일 생성
         }
 
+        String rootPath = servletContext.getRealPath("/");
+        String savePath = rootPath + "/nginx";
         String fileName = projectName + ".conf"; //파일이름 [projectName].conf로 만들어주기
-        fileManager.saveFile("/nginx",fileName,sb.toString()); //fileManager활용해서 /nginx경로에 저장하기
+        fileManager.saveFile(savePath,fileName,sb.toString()); //fileManager활용해서 /nginx경로에 저장하기
     }
 
     //프론트 nginx config 파일 생성 후 /[projectName]/[frontendPath]/conf/conf.d 파일에 default.conf이름으로 저장
     @Override
     public void saveFrontNginxConfigFile(String path, String projectName) throws IOException {
-        String frontPath = "/" + projectName + path; //파일 저장할 경로 생성
+        String rootPath = servletContext.getRealPath("/");
+        String frontPath = rootPath + projectName + path; //파일 저장할 경로 생성
         //해당 파일 경로 이미 있는지 확인
         if (!new File(frontPath).exists()) {
             log.info("잘못된 경로입니다.");
