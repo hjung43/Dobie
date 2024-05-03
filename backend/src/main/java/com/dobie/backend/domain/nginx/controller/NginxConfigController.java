@@ -23,14 +23,14 @@ public class NginxConfigController {
 
     @Operation(summary = "nginx proxy config 파일 생성",  description = "프로젝트ID, 프로젝트이름")
     @PostMapping("/proxyConf")
-    public ResponseEntity<?> nginxConfig(@RequestParam(name = "projectId") int projectId, @RequestParam(name = "projectName") String projectName) {
+    public ResponseEntity<?> nginxProxyConfig(@RequestParam(name = "projectId") int projectId, @RequestParam(name = "projectName") String projectName) {
         nginxConfigService.saveProxyNginxConfigTest(projectId, projectName);
         return new ResponseEntity<String>("성공", HttpStatus.OK);
     }
 
     @Operation(summary = "nginx front config 파일 생성",  description = "파일경로, 프로젝트이름")
-    @PostMapping("/proxyConf")
-    public ResponseEntity<?> nginxConfig(@RequestParam(name = "projectName") String projectName, @RequestParam(name = "path") String path) throws IOException {
+    @PostMapping("/FrontConf")
+    public ResponseEntity<?> nginxFrontConf(@RequestParam(name = "projectName") String projectName, @RequestParam(name = "path") String path) throws IOException {
         nginxConfigService.saveFrontNginxConfigFile(path, projectName);
         return new ResponseEntity<String>("성공", HttpStatus.OK);
     }
