@@ -82,8 +82,13 @@ public class NginxConfigServiceImpl implements NginxConfigService{
     //프론트 nginx config 파일 생성 후 /[projectName]/[frontendPath]/conf/conf.d 파일에 default.conf이름으로 저장
     @Override
     public void saveFrontNginxConfigFile(String path, String projectName) throws IOException {
-        String savePath = "/" + projectName + path + "/conf/conf.d"; //파일 저장할 경로 생성
+        String frontPath = "/" + projectName + path; //파일 저장할 경로 생성
         //해당 파일 경로 이미 있는지 확인
+        if (!new File(frontPath).exists()) {
+            log.info("잘못된 경로입니다.");
+            return;
+        }
+        String savePath = "/" + projectName + path + "/conf/conf.d"; //파일 저장할 경로 생성
         if (!new File(savePath).exists()) {
             new File(savePath).mkdirs(); //없으면 새로 만들기
         }
