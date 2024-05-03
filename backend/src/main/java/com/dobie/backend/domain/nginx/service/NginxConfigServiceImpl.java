@@ -80,9 +80,9 @@ public class NginxConfigServiceImpl implements NginxConfigService{
         }else{
             sb.append(withoutHttpsConfig(nginxConfig)); //https 미사용시 config파일 생성
         }
-        String rootPath = System.getProperty("user.dir");
+     
         String fileName = projectName + ".conf"; //파일이름 [projectName].conf로 만들어주기
-        fileManager.saveFile(rootPath+"./nginx",fileName,sb.toString()); //fileManager활용해서 /nginx경로에 저장하기
+        fileManager.saveFile("/home/ubuntu/nginx",fileName,sb.toString()); //fileManager활용해서 /nginx경로에 저장하기
     }
 
     //프론트 nginx config 파일 생성 후 /[projectName]/[frontendPath]/conf/conf.d 파일에 default.conf이름으로 저장
