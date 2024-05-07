@@ -3,7 +3,6 @@ package com.dobie.backend.domain.project.service;
 import com.dobie.backend.domain.project.dto.*;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public interface ProjectService {
 
@@ -34,9 +33,9 @@ public interface ProjectService {
 
     void stopProject(String projectId);
 
-    CompletableFuture<Boolean> verifyComposeUpSuccess(String path);
-
     void stopService(String containerName);
+
+    boolean verifyComposeUpSuccess(String path);
 
 //    void buildFrontService(String projectId, ProjectRequestDto dto)
 
